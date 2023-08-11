@@ -24,6 +24,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"os/user"
 	"path/filepath"
 	"strings"
 
@@ -74,9 +75,12 @@ window including all terminal colors and text decorations.
 		var buf bytes.Buffer
 
 		// Prepend command line arguments to output content
-		if includeCommand, err := cmd.Flags().GetBool("show-cmd"); err == nil && includeCommand {
-			bunt.Fprintf(&buf, "Lime{➜} DimGray{%s}\n", strings.Join(args, " "))
-		}
+		// if includeCommand, err := cmd.Flags().GetBool("show-cmd"); err == nil && includeCommand {
+			uname, _ := user.Current()
+			hostname, _ := os.Hostname()
+			UnameHost := "["+uname.Username+"@"+hostname+"]"
+			bunt.Fprintf(&buf, "LightSeaGreen{%s} Lime{➜} DimGray{%s}\n", UnameHost, strings.Join(args, " "))
+		// }
 
 		bytes, err := ptexec.RunCommandInPseudoTerminal(args[0], args[1:]...)
 		if err != nil {
